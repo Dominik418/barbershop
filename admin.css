@@ -1,0 +1,178 @@
+:root {
+    --bg-color: #121212;
+    --sidebar-bg: #1a1a1a;
+    --card-bg: #1e1e1e;
+    --text-primary: #e0e0e0;
+    --accent-color: #c79b63;
+    --accent-hover: #c79b63;
+    --border-color: #333;
+    --danger: #842029;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    padding: 20px;
+}
+
+.sidebar h2 {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 12px;
+    display: block;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: var(--accent-color);
+    color: black;
+}
+
+.main {
+    flex-grow: 1;
+    padding: 30px;
+}
+
+.topbar {
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.table-container {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    overflow-x: auto;
+}
+
+.dataTables_wrapper {
+    color: var(--text-primary) !important;
+}
+
+table.dataTable {
+    background-color: transparent !important;
+    border-collapse: collapse !important;
+}
+
+table.dataTable thead th {
+    color: var(--accent-color) !important;
+    border-bottom: 2px solid var(--accent-color) !important;
+    text-transform: uppercase;
+}
+
+table.dataTable tbody td {
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 12px !important;
+}
+
+.selected-row {
+    background-color: var(--accent-color) !important;
+    color: black !important;
+}
+
+.selected-row td {
+    color: black !important;
+}
+
+.button-container {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    background-color: var(--accent-color);
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    color: white;
+}
+
+@media screen and (max-width: 768px) {
+    table thead {
+        display: none;
+    }
+
+    table, table tbody, table tr, table td {
+        display: block;
+        width: 100%;
+    }
+
+    table tr {
+        margin-bottom: 20px;
+        border: 1px solid #d4af37;
+        border-radius: 10px;
+        background: #fff;
+        padding: 5px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        text-align: right;
+        padding: 12px 10px;
+        border-bottom: 1px solid #eee;
+        word-break: break-all;
+    }
+
+
+    table td::before {
+        content: attr(data-label);
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        color: #888;
+        padding-right: 15px;
+        text-align: left;
+        min-width: 100px;
+        flex-shrink: 0;
+    }
+
+    
+}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <title>Admin Panel - Employees</title>
+    <link rel="stylesheet" href="/admin.css">
+    <style>
+        tfoot#newRecordRow {
+            border-top: 2px solid var(--accent-color);
+        }
+        .new-editable {
+            background-color: rgba(199, 155, 99, 0.05);
+            outline: 1px dashed var(--accent-color);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Welcome {{adminName}}</h2>
+            <ul>
+                <li><a href="/login/admin-dashboard">Appointments</a></li>
+                <li><a href="/login/users">Users</a></li>
+                <li><a href="/login/services">Services</a></li>
+                <li><a href="/login/employees">Employees</a></li>
+                <li><a href="/auth/logout" class="nav-link" style="color: #ff4d4d;">Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <h1>Employees</h1>
+            </header>
+
+            <div class="table-container">
+                <table id="myTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Barber Name</th>
+                            <th>Experience</th>
+                            <th>Speciality</th>
+                            <th>Small Text</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each employees}}
+                        <tr>
+                            <td data-label="ID">{{this.id}}</td>
+                            <td data-label="Name" class="editable" data-field="name" contenteditable="true">{{this.name}}</td>
+                            <td data-label="Experience" class="editable" data-field="experience" contenteditable="true">{{this.experience}}</td>
+                            <td data-label="Speciality" class="editable" data-field="speciality" contenteditable="true">{{this.speciality}}</td>
+                            <td data-label="Small Text" class="editable" data-field="small_text" contenteditable="true">{{this.small_text}}</td>
+                            <td data-label="Actions">---</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                    <tfoot id="newRecordRow" style="display: none; background: #1a1a1a;">
+                        <tr>
+                            <td data-label="ID">NEW</td>
+                            <td data-label="Name" class="new-editable" data-field="name" contenteditable="true">Full Name</td>
+                            <td data-label="Experience" class="new-editable" data-field="experience" contenteditable="true">Experience</td>
+                            <td data-label="Speciality" class="new-editable" data-field="speciality" contenteditable="true">Speciality</td>
+                            <td data-label="Small Text" class="new-editable" data-field="small_text" contenteditable="true">Short description...</td>
+                            <td data-label="Actions">
+                                <div style="display: flex; gap: 5px;">
+                                    <button id="createBtn" style="background-color: #28a745; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer;">Create</button>
+                                    <button id="cancelBtn" style="background-color: #6c757d; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer;">Cancel</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="button-container">
+                <button id="addEmployeeBtn" style="background-color: #28a745; color: white;">Add New Employee</button>
+                <button class="save-btn">Update Selected</button>
+                <button id="deleteBtn" class="btn-danger">Delete Selected</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const table = $('#myTable').DataTable({
+                "pageLength": 10,
+                "order": [[0, "asc"]]
+            });
+            
+            let selectedId = null;
+            function getTableName() { return 'employees'; }
+
+            // 1. Új sor megjelenítése
+            $('#addEmployeeBtn').on('click', function() {
+                $('#newRecordRow').show();
+                $(this).fadeOut();
+                $('html, body').animate({ scrollTop: $(document).height() }, 'slow');
+            });
+
+            // 2. Mégsem
+            $('#cancelBtn').on('click', function() {
+                $('#newRecordRow').hide();
+                $('#addEmployeeBtn').fadeIn();
+            });
+
+            // 3. Mentés (Create)
+            $('#createBtn').on('click', function() {
+                const newData = {};
+                $('#newRecordRow .new-editable').each(function() {
+                    const field = $(this).data('field');
+                    const value = $(this).text().trim();
+                    newData[field] = value;
+                });
+
+                fetch('/auth/add-record', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ table: getTableName(), data: newData })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        alert("Sikeresen hozzáadva!");
+                        location.reload();
+                    } else {
+                        alert("Hiba: " + res.message);
+                    }
+                });
+            });
+
+            // 4. Kijelölés
+            $('#myTable tbody').on('click', 'td:not(:last-child)', function () {
+                const $row = $(this).closest('tr');
+                if ($row.hasClass('selected-row')) {
+                    $row.removeClass('selected-row');
+                    selectedId = null;
+                } else {
+                    table.$('tr.selected-row').removeClass('selected-row');
+                    $row.addClass('selected-row');
+                    selectedId = $row.find('td:first-child').text().trim();
+                }
+            });
+
+            // 5. Frissítés (Update)
+            $('.save-btn').on('click', function () {
+                if (!selectedId) return alert("Válassz ki egy sort!");
+
+                const $row = table.$('tr.selected-row');
+                const updatedData = { id: selectedId };
+
+                $row.find('.editable').each(function () {
+                    const field = $(this).data('field');
+                    const value = $(this).text().trim();
+                    updatedData[field] = value;
+                });
+
+                fetch('/auth/update-record', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ table: getTableName(), data: updatedData })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    alert(res.message);
+                    location.reload();
+                });
+            });
+
+            // 6. Törlés (Delete)
+            $('#deleteBtn').on('click', function () {
+                if (!selectedId) return alert("Válassz ki egy sort!");
+
+                if (confirm(`Biztosan törlöd a(z) ${selectedId} azonosítót?`)) {
+                    fetch('/auth/delete-record', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ table: getTableName(), id: selectedId })
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        alert(res.message);
+                        location.reload();
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

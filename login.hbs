@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/login.css">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <title>Cuts & Hustle</title>
+</head>
+<body>
+   <body>
+
+    <div class="login-container">
+        <h1>Cuts & Hustle</h1>
+
+        {{#if message}}
+            <div class="message">{{message}}</div>
+        {{/if}}
+
+        <form action="/auth/login" method="POST">
+            <input type="text" name="username" placeholder="Username" required />
+            <input type="password" name="password" placeholder="Password" required />
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <a href="/login/guest" class="guest-btn" style="text-decoration: none; font-size: 13.3px; text-align: center; line-height: 1.2;">
+            Continue as guest
+        </a><br>
+
+        <a href="/login/register" class="register-link">Don't have an account? Register</a>
+    </div>
+
+</body>
+</body>
+</html>

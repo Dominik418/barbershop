@@ -1,0 +1,156 @@
+:root {
+            --primary-gold: #c79b63;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --input-bg: #2a2a2a;
+            --text-white: #ffffff;
+            --error-red: #ff4d4d;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .login-container {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                box-shadow: none;
+            }
+            
+            .login-container h1 {
+                font-size: 24px;
+            }
+        }
+
+        .login-container h1 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+            color: var(--primary-gold);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .message {
+            background: rgba(255, 77, 77, 0.1);
+            border-left: 4px solid var(--error-red);
+            color: var(--error-red);
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: left;
+            border-radius: 4px;
+        }
+
+        form {
+            width: 100%;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            outline: none;
+            background: var(--input-bg);
+            color: var(--text-white);
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary-gold);
+        }
+
+        button, .guest-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: block;
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn {
+            background: var(--primary-gold);
+            color: #000;
+        }
+
+        .login-btn:hover {
+            background: #e0ac6e;
+            transform: translateY(-2px);
+        }
+
+        .guest-btn {
+            background: transparent;
+            border: 1.5px solid var(--primary-gold);
+            color: var(--primary-gold);
+            line-height: 1.2;
+        }
+
+        .guest-btn:hover {
+            background: rgba(199, 155, 99, 0.1);
+        }
+
+        .divider {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #333;
+        }
+
+        .divider::before { margin-right: 10px; }
+        .divider::after { margin-left: 10px; }
+
+        .links-container {
+            margin-top: 20px;
+        }
+
+        .register-link {
+            color: #aaa;
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .register-link:hover {
+            color: var(--primary-gold);
+        }

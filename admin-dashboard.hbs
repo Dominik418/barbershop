@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+<title>Admin Panel</title>
+<link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+    <div class="container">
+
+    <aside class="sidebar">
+        <h2>Welcome {{adminName}}</h2>
+        <ul>
+           <li><a href="/login/admin-dashboard">Appointments</a></li>
+            <li><a href="/login/users">Users</a></li>
+            <li><a href="/login/services">Services</a></li>
+            <li><a href="/login/employees">Employees</a></li>
+            <li><a href="/auth/logout" class="nav-link" style="color: #ff4d4d;">Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <h1>Appointments</h1>
+        </header>
+<div class="table-container">
+<table id="myTable" class="display">
+    <thead>
+       
+        <tr>
+                <th>ID</th>
+                <th>Barber Name</th>
+                <th>Customer name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Service</th>
+                <th>Date</th>
+                <th>Time</th>
+        </tr>
+        
+    </thead>
+    <tbody>
+         {{#each appointments}}
+        <tr>
+            <td data-label="ID">{{this.id}}</td>
+            <td data-label="Barber">{{this.barber_name}}</td>
+            <td data-label="Customer">{{this.customer_name}}</td>
+            <td data-label="Phone">{{this.customer_phone}}</td>
+            <td data-label="Email">{{this.customer_email}}</td>
+            <td data-label="Service">{{this.service_name}}</td>
+            <td data-label="Date">{{this.appointment_date}}</td>
+            <td data-label="Time">{{this.appointment_time}}</td>
+                
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+<br>
+          <div class="button">
+    <button id="deleteBtn">Delete Appointment</button>
+</div>
+    </main>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+
+<script>
+$(document).ready(function () {
+    const table = $('#myTable').DataTable();
+    let selectedId = null;
+
+    $('#myTable tbody').on('click', 'td:first-child', function () {
+        const $row = $(this).parent();
+        if ($row.hasClass('selected-row')) {
+            $row.removeClass('selected-row');
+            selectedId = null;
+        } else {
+            table.$('tr.selected-row').removeClass('selected-row');
+            $row.addClass('selected-row');
+            selectedId = $(this).text().trim();
+        }
+    });
+
+    
+    $('#deleteBtn').on('click', function () {
+    if (!selectedId) return alert("Válassz ki egy sort az ID-ra kattintva!");
+
+    if (confirm(`Biztosan törlöd a(z) ${selectedId} azonosítójú időpontot?`)) {
+        fetch('/auth/delete-record', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                table: 'appointments',
+                id: selectedId 
+            })
+        })
+        .then(res => res.json())
+        .then(res => {
+            alert(res.message);
+            location.reload();
+        })
+        .catch(err => console.error("Hiba:", err));
+    }
+});
+});
+</script>
+</body>
+</html>

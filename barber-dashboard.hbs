@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/barber-dashboard.css">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <title>{{barberName}}'s Dashboard</title>
+</head>
+<body>
+    <div class="table-container">
+        <h1>Welcome {{barberName}}</h1>
+        
+        <table id="barberTable" class="display">
+            <thead>
+                <tr>
+                    <th class="text-left">Customer Name</th>
+                    <th class="text-left">Phone Number</th>
+                    <th class="text-left">Email</th>
+                    <th>Service</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each appointments}}
+                    <tr>
+                        <td class="text-left">{{this.customer_name}}</td>
+                        <td class="text-left">{{this.customer_phone}}</td>
+                        <td class="text-left">{{this.customer_email}}</td>
+                        <td>{{this.service_name}}</td>
+                        <td>{{this.appointment_date}}</td>
+                        <td>{{this.appointment_time}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css">
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+
+<script>
+    $(document).ready(function () {
+    $('#barberTable').DataTable({
+        "columnDefs": [
+            {
+                "targets": 4,
+                "render": function (data, type, row) {
+                    if (data) {
+                        return data.substring(0, 10);
+                    }
+                    return data;
+                }
+            }
+        ],
+        "order": [[4, "asc"], [5, "asc"]],
+    });
+});
+</script>
+</body>
+</html>

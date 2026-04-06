@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css">
+<title>Admin Panel</title>
+<link rel="stylesheet" href="/admin.css">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+
+
+<body>
+
+    <div class="container">
+
+    <aside class="sidebar">
+        <h2>Welcome {{adminName}}</h2>
+        <ul>
+        <li><a href="/login/admin-dashboard">Appointments</a></li>
+            <li><a href="/login/users">Users</a></li>
+            <li><a href="/login/services">Services</a></li>
+            <li><a href="/login/employees">Employees</a></li>
+            <li><a href="/auth/logout" class="nav-link" style="color: #ff4d4d;">Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <h1>Users</h1>
+        </header>
+<div class="table-container">
+<table id="myTable" class="display">
+    <thead>
+        
+       <tr>
+                <th>ID</th>
+                <th>User Name</th>
+                <th>Role</th>
+                <th>User Phone</th>
+                <th>User Email</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        {{#each users}}
+        <tr data-id="{{this.id}}">
+  <td data-label="ID">{{this.id}}</td>
+  <td class="editable" data-field="username" data-label="UserName" contenteditable="true">{{this.username}}</td>
+  
+  <td data-label="Role">
+    <select class="role-select" data-field="role">
+      <option value="customer" {{#if (eq this.role "customer")}}selected{{/if}}>Customer</option>
+      <option value="barber" {{#if (eq this.role "barber")}}selected{{/if}}>Barber</option>
+      <option value="admin" {{#if (eq this.role "admin")}}selected{{/if}}>Admin</option>
+    </select>
+  </td>
+
+  <td class="editable" data-field="phone_num" data-label="Phone" contenteditable="true">{{this.phone_num}}</td>
+  <td class="editable" data-field="email" contenteditable="true" data-label="Email">{{this.email}}</td>
+</tr>
+             {{/each}}
+    </tbody>
+</table>
+</div>
+<br>
+          
+          <div class="button">
+    <button>Update user role</button>
+    <button>Delete user</button>
+</div>
+
+          
+          
+          
+
+
+    </main>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+
+<script>
+$(document).ready(function () {
+    const table = $('#myTable').DataTable();
+    let selectedId = null;
+
+    $('#myTable tbody').on('click', 'td:first-child', function () {
+        const $row = $(this).parent();
+        if ($row.hasClass('selected-row')) {
+            $row.removeClass('selected-row');
+            selectedId = null;
+        } else {
+            table.$('tr.selected-row').removeClass('selected-row');
+            $row.addClass('selected-row');
+            selectedId = $(this).text().trim();
+        }
+    });
+
+    function getTableName() {
+        const path = window.location.pathname;
+        if (path.includes("users")) return "users";
+        if (path.includes("services")) return "services";
+        if (path.includes("employees")) return "employees";
+        if (path.includes("admin-dashboard")) return "appointments";
+        return "";
+    }
+
+    $('.button button:contains("Update"), button#updateBtn').on('click', function () {
+        if (!selectedId) return alert("Válassz ki egy sort az ID-ra kattintva!");
+
+        const $row = $('.selected-row');
+        const updatedData = { id: selectedId };
+
+        $row.find('.editable').each(function () {
+            const field = $(this).data('field');
+            const value = $(this).text().trim();
+            updatedData[field] = value;
+        });
+
+        $row.find('select').each(function () {
+            const field = $(this).data('field');
+            updatedData[field] = $(this).val();
+        });
+
+        fetch('/auth/update-record', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ table: getTableName(), data: updatedData })
+        })
+        .then(res => res.json())
+        .then(res => {
+            alert(res.message);
+            location.reload();
+        });
+    });
+
+    $('.button button:contains("Delete"), button#deleteBtn').on('click', function () {
+        if (!selectedId) return alert("Válassz ki egy sort az ID-ra kattintva!");
+
+        if (confirm(`Biztosan törlöd a(z) ${selectedId} azonosítójú elemet?`)) {
+            fetch('/auth/delete-record', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ table: getTableName(), id: selectedId })
+            })
+            .then(res => res.json())
+            .then(res => {
+                alert(res.message);
+                location.reload();
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>
